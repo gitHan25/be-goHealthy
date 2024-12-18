@@ -19,9 +19,10 @@ import java.util.List;
 public class User {
 
     @Id
+
     private int id;
     private String username;
-
+    private String email;
     private String password;
 
     private String name;
@@ -31,5 +32,7 @@ public class User {
     @Column(name = "token_expired_at")
     private Long tokenExpiredAt;
 
+    @OneToMany(mappedBy = "user")
+    private List<FoodConsumption> foodConsumptions;
 
 }
