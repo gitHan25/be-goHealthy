@@ -2,6 +2,7 @@ package com.example.go_healthy_be.service;
 
 import java.util.UUID;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,7 @@ public class AuthService {
     public TokenResponse login(LoginUserRequest request){
         validationService.validate(request);
 
-        User user = userRepository.findById(request.getEmail())
+        User user = userRepository.findByEmail(request.getEmail())
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Username or password wrong"));
 
         if(BCrypt.checkpw(request.getPassword(), user.getPassword())){
