@@ -24,7 +24,9 @@ CREATE TABLE content(
                         FOREIGN KEY (user_id) REFERENCES users(user_id)
 ) ENGINE=InnoDB;
 
-
+CREATE table food(
+    
+)
 CREATE TABLE food_consumption(
     food_id INT AUTO_INCREMENT PRIMARY KEY ,
     user_id INT,
@@ -40,3 +42,6 @@ desc food_consumption;
 desc content;
 
 DESC USERS;
+
+
+select * from users;

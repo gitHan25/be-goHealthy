@@ -1,4 +1,5 @@
 package com.example.go_healthy_be.model;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,11 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class WebResponse<T> {
+public class TokenResponse {
 
-    private T data;
-
-    private String errors;
-
+    private String token;
+    private Long expiredAt;
 
 }

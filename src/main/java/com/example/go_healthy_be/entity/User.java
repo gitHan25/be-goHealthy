@@ -19,10 +19,12 @@ import java.util.List;
 public class User {
 
     @Id
-
-    private int id;
-    private String username;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int user_id;
+    @Column(unique = true, nullable = false)
     private String email;
+    private String username;
+
     private String password;
 
     private String name;
