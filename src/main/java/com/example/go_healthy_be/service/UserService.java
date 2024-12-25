@@ -4,6 +4,7 @@ package com.example.go_healthy_be.service;
 import com.example.go_healthy_be.entity.User;
 
 import com.example.go_healthy_be.model.RegisterUserRequest;
+import com.example.go_healthy_be.model.UserResponse;
 import com.example.go_healthy_be.repository.UserRepository;
 import com.example.go_healthy_be.security.BCrypt;
 
@@ -41,5 +42,11 @@ validationService.validate(request);
 
     }
 
+    public UserResponse get(User user){
+        return UserResponse.builder()
+        .email(user.getEmail())
+        .username(user.getUsername())
+        .build();
+    }
     
 }
