@@ -1,10 +1,6 @@
 package com.example.go_healthy_be.repository;
-
 import com.example.go_healthy_be.entity.User;
-
-
 import java.util.Optional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

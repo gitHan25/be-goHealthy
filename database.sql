@@ -25,7 +25,7 @@ CREATE TABLE content(
 ) ENGINE=InnoDB;
 
 CREATE table food(
-    
+
 )
 CREATE TABLE food_consumption(
     food_id INT AUTO_INCREMENT PRIMARY KEY ,

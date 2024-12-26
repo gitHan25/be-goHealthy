@@ -28,7 +28,7 @@ public class AuthService {
         validationService.validate(request);
 
         User user = userRepository.findByEmail(request.getEmail())
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Username or password wrong"));
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Email or password wrong"));
 
         if(BCrypt.checkpw(request.getPassword(), user.getPassword())){
             user.setToken(UUID.randomUUID().toString());
@@ -39,7 +39,7 @@ public class AuthService {
             .expiredAt(user.getTokenExpiredAt())
             .build();
         }else{
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Username or password wrong");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Email or password wrong");
         }
     }
     private Long next30days(){

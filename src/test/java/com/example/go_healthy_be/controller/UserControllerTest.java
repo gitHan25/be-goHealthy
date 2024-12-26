@@ -156,5 +156,56 @@ class UserControllerTest {
 
         });
     }
+
+    @Test
+    void updateUserUnauthorized()throws Exception{
+        UpdateUserRequest request = new UpdateUserRequest();
+        mockMvc.perform(
+            patch("/api/users/current")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request))
+         
+        ).andExpectAll(
+            status().isUnauthorized()
+        ).andDo(result ->{
+        WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {});
+        assertNotNull(response.getErrors());
+        });
+    }
+    @Test
+    void updateUserSucces()throws Exception{
+        User user = new User();
+        user.setEmail("han@gmail.com");
+        user.setUsername("test");
+        user.setPassword(BCrypt.hashpw("rahasia", BCrypt.gensalt()));
+        user.setUsername("test");
+        user.setName("Test");
+        user.setToken("Test");
+        user.setTokenExpiredAt(System.currentTimeMillis()+100000000L);
+        userRepository.save(user);
+        UpdateUserRequest request = new UpdateUserRequest();
+        request.setName("Farhan");
+        request.setPassword("farhan25");
+        request.setUsername("han25");
+        mockMvc.perform(
+            patch("/api/users/current")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request))
+            .header("X-API-TOKEN", "Test")
+        ).andExpectAll(
+            status().isOk()
+        ).andDo(result ->{
+        WebResponse<UserResponse> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {});
+        assertNull(response.getErrors());
+        assertEquals("Farhan",response.getData().getName());
+        assertEquals("han25",response.getData().getUsername());
+       
+        User userDB = userRepository.findByEmail("han@gmail.com").orElse(null);
+            assertNotNull(userDB);
+            assertTrue(BCrypt.checkpw("farhan25", userDB.getPassword()));
+        });
+}
 }
 
