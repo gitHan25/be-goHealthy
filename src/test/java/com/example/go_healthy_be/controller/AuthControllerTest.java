@@ -121,6 +121,51 @@ userRepository.save(user);
         assertEquals(userDb.get().getTokenExpiredAt(), response.getData().getExpiredAt());
 
     });
+
+}
+
+@Test
+void logoutFailed() throws Exception{
+    mockMvc.perform(
+        delete("/api/auth/logout")
+        .accept(MediaType.APPLICATION_JSON)
+    ).andExpectAll(
+        status().isUnauthorized()
+        ).andDo(result -> {
+            WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {});
+            assertNotNull(response.getErrors());
+        });
+   
+    
+}
+@Test
+void logoutSucces() throws Exception{
+    User user = new User();
+    user.setEmail("han@gmail.com");
+    user.setUsername("test");
+    user.setPassword(BCrypt.hashpw("rahasia", BCrypt.gensalt()));
+    user.setUsername("test");
+    user.setName("Test");
+    user.setToken("Test");
+    user.setTokenExpiredAt(System.currentTimeMillis()+100000000L);
+    userRepository.save(user);
+    mockMvc.perform(
+        delete("/api/auth/logout")
+        .accept(MediaType.APPLICATION_JSON)
+        .header("X-API-TOKEN", "Test")
+    ).andExpectAll(
+        status().isOk()
+        ).andDo(result -> {
+            WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {});
+            assertNull(response.getErrors());
+            assertEquals("OK", response.getData());
+
+            User userDb = userRepository.findByEmail("han@gmail.com").orElse(null);
+            assertNull(userDb.getTokenExpiredAt());
+            assertNull(userDb.getToken());
+        });
+   
+    
 }
 
 }
