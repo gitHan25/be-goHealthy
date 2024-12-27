@@ -27,6 +27,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @CrossOrigin(origins = "http://127.0.0.1:3000")
     @PostMapping(path = "/api/users",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
     public WebResponse<String> register(@RequestBody RegisterUserRequest request) {
         userService.register(request);

@@ -8,6 +8,7 @@ import lombok.Setter;
 
 import java.sql.Date;
 
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -16,9 +17,9 @@ import java.sql.Date;
 @Table(name = "food_consumption")
 public class FoodConsumption {
 @Id
-    private  String id;
+    private String food_id;
     private String foodName;
-    private String calories;
+    private Double calories;
     private Date consumptionDate;
     private int quantity;
 

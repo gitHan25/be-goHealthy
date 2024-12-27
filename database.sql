@@ -24,13 +24,12 @@ CREATE TABLE content(
                         FOREIGN KEY (user_id) REFERENCES users(user_id)
 ) ENGINE=InnoDB;
 
-CREATE table food(
 
-)
+DROP TABLE IF EXISTS food_consumption;
 CREATE TABLE food_consumption(
-    food_id INT AUTO_INCREMENT PRIMARY KEY ,
+    food_id VARCHAR(100) PRIMARY KEY ,
     user_id INT,
-    food_name VARCHAR(128),
+    food_name VARCHAR(128) NOT NULL,
     calories double(5,2),
     consumption_date DATETIME,
     quantity int,
@@ -38,7 +37,7 @@ CREATE TABLE food_consumption(
 )ENGINE =InnoDB;
 
 desc food_consumption;
-
+desc food_consumption;
 desc content;
 
 DESC USERS;

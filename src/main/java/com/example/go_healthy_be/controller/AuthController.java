@@ -28,11 +28,11 @@ public class AuthController {
 )
 
 
-    public WebResponse<TokenResponse> login(@RequestBody LoginUserRequest request){
+        public WebResponse<TokenResponse> login(@RequestBody LoginUserRequest request){
         TokenResponse tokenResponse = authService.login(request);
         return WebResponse.<TokenResponse>builder().data(tokenResponse).build();
     }
-
+    @CrossOrigin(origins = "http://127.0.0.1:3000")
     @DeleteMapping(
         path = "/api/auth/logout",
         produces = MediaType.APPLICATION_JSON_VALUE

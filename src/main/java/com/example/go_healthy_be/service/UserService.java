@@ -48,6 +48,7 @@ validationService.validate(request);
 
     public UserResponse get(User user){
         return UserResponse.builder()
+        .name(user.getName())
         .email(user.getEmail())
         .username(user.getUsername())
         .build();
@@ -59,7 +60,7 @@ validationService.validate(request);
             .collect(Collectors.toList());
     }
     @Transactional
-    public UserResponse updateUser( User user,UpdateUserRequest request){
+    public UserResponse updateUser(User user,UpdateUserRequest request){
         validationService.validate(request);
         if(Objects.nonNull(request.getName())){
             user.setName(request.getName());
@@ -77,6 +78,8 @@ validationService.validate(request);
         .username(user.getUsername())
         .build();
     }
+
+
    
     
 }
