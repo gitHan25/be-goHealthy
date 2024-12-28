@@ -7,12 +7,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import java.sql.Date;
+
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Optional;
+
 import java.util.TimeZone;
 
 import org.springframework.http.MediaType;
@@ -28,7 +25,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.example.go_healthy_be.entity.User;
 import com.example.go_healthy_be.model.CreateFoodConsumptionRequest;
 import com.example.go_healthy_be.model.FoodConsumptionResponse;
-import com.example.go_healthy_be.model.TokenResponse;
 import com.example.go_healthy_be.model.WebResponse;
 import com.example.go_healthy_be.repository.FoodConsumptionRepository;
 import com.example.go_healthy_be.repository.UserRepository;
@@ -126,9 +122,30 @@ void CreateFoodConsumptionSucces() throws Exception {
             assertEquals(2, response.getData().getQuantity());
             assertEquals("31-12-2023", new SimpleDateFormat("dd-MM-yyyy").format(response.getData().getConsumptionDate()));
             assertEquals(100.0, response.getData().getCalories());
-            assertTrue(foodConsumptionRepository.existsById(response.getData().getFood_id()));
+            assertTrue(foodConsumptionRepository.existsById(response.getData().getFoodId()));
         });
 }
+@Test
+void getFoodConsumptionNotFound() throws Exception {
+    
 
+    mockMvc.perform(
+            get("/api/food-consumption/123123123")
+                .contentType(MediaType.APPLICATION_JSON)
+              
+                .header("X-API-TOKEN", "test")
+        )
+        .andExpectAll(
+            status().isNotFound()
+        )
+        .andDo(result -> {
+           
+            WebResponse<FoodConsumptionResponse> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {});
+
+           
+            assertNotNull(response.getErrors());
+         
+        });
+}
         
 }

@@ -43,4 +43,4 @@ desc content;
 DESC USERS;
 
 
-select * from users;
+select * from food_consumption;

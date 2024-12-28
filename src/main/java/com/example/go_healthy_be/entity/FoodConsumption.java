@@ -17,7 +17,7 @@ import java.sql.Date;
 @Table(name = "food_consumption")
 public class FoodConsumption {
 @Id
-    private String food_id;
+    private String foodId;
     private String foodName;
     private Double calories;
     private Date consumptionDate;
