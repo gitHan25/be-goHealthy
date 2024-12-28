@@ -15,7 +15,7 @@ import com.example.go_healthy_be.entity.User;
 import com.example.go_healthy_be.model.CreateFoodConsumptionRequest;
 import com.example.go_healthy_be.model.FoodConsumptionResponse;
 import com.example.go_healthy_be.model.WebResponse;
-import com.example.go_healthy_be.repository.UserRepository;
+
 import com.example.go_healthy_be.service.FoodService;
 
 @RestController
