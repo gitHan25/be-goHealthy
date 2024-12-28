@@ -1,9 +1,8 @@
 package com.example.go_healthy_be.model;
 
-import java.sql.Date;
+import java.time.LocalDateTime;
 
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
@@ -30,8 +29,8 @@ public class CreateFoodConsumptionRequest {
     @DecimalMin("0.0")
     @DecimalMax("1000.0")
     private Double calories;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy", timezone = "UTC")
-    private Date consumptionDate;
+   
+    private LocalDateTime consumptionDate;
 
     @Min(0)
     @Max(1000)

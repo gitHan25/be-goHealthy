@@ -6,7 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Date;
+
+import java.time.LocalDateTime;
 
 
 @Getter
@@ -20,10 +21,10 @@ public class FoodConsumption {
     private String foodId;
     private String foodName;
     private Double calories;
-    private Date consumptionDate;
+    private LocalDateTime consumptionDate;
     private int quantity;
 
     @ManyToOne
-    @JoinColumn(name = "user_id",referencedColumnName = "user_id")
+    @JoinColumn(name = "user_id",referencedColumnName = "userId")
     private User user;
 }

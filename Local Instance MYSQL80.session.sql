@@ -1,1 +1,0 @@
-desc food_consumption;

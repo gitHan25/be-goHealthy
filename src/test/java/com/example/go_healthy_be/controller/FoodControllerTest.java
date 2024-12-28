@@ -7,10 +7,14 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
+import java.sql.Date;
 import java.text.SimpleDateFormat;
-
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import org.springframework.http.MediaType;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 
-
+import com.example.go_healthy_be.entity.FoodConsumption;
 import com.example.go_healthy_be.entity.User;
 import com.example.go_healthy_be.model.CreateFoodConsumptionRequest;
 import com.example.go_healthy_be.model.FoodConsumptionResponse;
@@ -86,19 +90,14 @@ public class FoodControllerTest {
         }
         @Test
 void CreateFoodConsumptionSucces() throws Exception {
-    // Atur timezone ke UTC
-    TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
-
     CreateFoodConsumptionRequest request = new CreateFoodConsumptionRequest();
     request.setFoodName("Nasi goreng");
 
-    // Parsing string tanggal
+    // Parsing string tanggal langsung ke LocalDateTime
     String dateString = "31-12-2023"; // Format DD-MM-YYYY
-    SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-    dateFormat.setTimeZone(TimeZone.getTimeZone("UTC")); // Pastikan parsing menggunakan UTC
-    java.util.Date utilDate = dateFormat.parse(dateString);
-    java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
-    request.setConsumptionDate(sqlDate);
+    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+    LocalDate date = LocalDate.parse(dateString, formatter);
+    request.setConsumptionDate(date.atStartOfDay()); // Atur waktu ke 00:00
 
     request.setQuantity(2);
     request.setCalories(100.0);
@@ -120,7 +119,8 @@ void CreateFoodConsumptionSucces() throws Exception {
             assertNull(response.getErrors());
             assertEquals("Nasi goreng", response.getData().getFoodName());
             assertEquals(2, response.getData().getQuantity());
-            assertEquals("31-12-2023", new SimpleDateFormat("dd-MM-yyyy").format(response.getData().getConsumptionDate()));
+            DateTimeFormatter responseFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            assertEquals("31-12-2023", response.getData().getConsumptionDate().format(responseFormatter));
             assertEquals(100.0, response.getData().getCalories());
             assertTrue(foodConsumptionRepository.existsById(response.getData().getFoodId()));
         });
@@ -146,6 +146,107 @@ void getFoodConsumptionNotFound() throws Exception {
             assertNotNull(response.getErrors());
          
         });
+    }
+    @Test
+    void getFoodConsumptionSucces() throws Exception {
+        // Ambil user untuk testing
+        User user = userRepository.findByEmail("test@gmail.com").orElseThrow();
+    
+        // Buat objek FoodConsumption untuk testing
+        FoodConsumption foodConsumption = new FoodConsumption();
+        foodConsumption.setFoodId(UUID.randomUUID().toString());
+        foodConsumption.setUser(user);
+        foodConsumption.setFoodName("Nasi goreng");
+    
+        // Tetapkan tanggal konsumsi
+        LocalDateTime consumptionDate = LocalDateTime.now();
+        foodConsumption.setConsumptionDate(consumptionDate);
+        foodConsumption.setQuantity(2);
+        foodConsumption.setCalories(100.0);
+        foodConsumptionRepository.save(foodConsumption);
+    
+        // Lakukan pengujian API
+        mockMvc.perform(
+                get("/api/food-consumption/" + foodConsumption.getFoodId())
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "test")
+        )
+        .andExpectAll(
+                status().isOk()
+        )
+        .andDo(result -> {
+            // Parse JSON respons
+            WebResponse<FoodConsumptionResponse> response = objectMapper.readValue(
+                    result.getResponse().getContentAsString(),
+                    new TypeReference<>() {}
+            );
+    
+            // Debugging log
+            System.out.println("Expected Date: " + consumptionDate);
+            System.out.println("Response Date: " + response.getData().getConsumptionDate());
+    
+            // Validasi hasil dari API
+            assertNull(response.getErrors());
+            assertEquals(foodConsumption.getFoodId(), response.getData().getFoodId());
+            assertEquals(foodConsumption.getFoodName(), response.getData().getFoodName());
+    
+            
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            String expectedDate = consumptionDate.format(formatter);
+            String responseDate = response.getData().getConsumptionDate().format(formatter);
+            assertEquals(expectedDate, responseDate);
+    
+            assertEquals(100.0, response.getData().getCalories());
+            assertTrue(foodConsumptionRepository.existsById(response.getData().getFoodId()));
+        });
+    }
+    @Test
+    void getAllFoodConsumptionByUserIdSuccess() throws Exception {
+        // Ambil user untuk testing
+        User user = userRepository.findByEmail("test@gmail.com").orElseThrow();
+
+        // Buat objek FoodConsumption untuk testing
+        FoodConsumption foodConsumption1 = new FoodConsumption();
+        foodConsumption1.setFoodId(UUID.randomUUID().toString());
+        foodConsumption1.setUser(user);
+        foodConsumption1.setFoodName("Nasi goreng");
+        foodConsumption1.setConsumptionDate(LocalDateTime.now());
+        foodConsumption1.setQuantity(2);
+        foodConsumption1.setCalories(100.0);
+        foodConsumptionRepository.save(foodConsumption1);
+
+        FoodConsumption foodConsumption2 = new FoodConsumption();
+        foodConsumption2.setFoodId(UUID.randomUUID().toString());
+        foodConsumption2.setUser(user);
+        foodConsumption2.setFoodName("Ayam Bakar");
+        foodConsumption2.setConsumptionDate(LocalDateTime.now());
+        foodConsumption2.setQuantity(1);
+        foodConsumption2.setCalories(300.0);
+        foodConsumptionRepository.save(foodConsumption2);
+
+        mockMvc.perform(
+                get("/api/users/" + user.getUserId() + "/food-consumption")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .header("X-API-TOKEN", "test")
+        ).andExpect(status().isOk())
+        .andDo(result -> {
+            WebResponse<List<FoodConsumptionResponse>> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {});
+            assertNull(response.getErrors());
+            assertEquals(2, response.getData().size());
+
+            FoodConsumptionResponse foodResponse1 = response.getData().get(0);
+            assertEquals("Nasi goreng", foodResponse1.getFoodName());
+            assertEquals(100.0, foodResponse1.getCalories());
+            assertEquals(2, foodResponse1.getQuantity());
+
+            FoodConsumptionResponse foodResponse2 = response.getData().get(1);
+            assertEquals("Ayam Bakar", foodResponse2.getFoodName());
+            assertEquals(300.0, foodResponse2.getCalories());
+            assertEquals(1, foodResponse2.getQuantity());
+        });
+    }
 }
         
-}
+
