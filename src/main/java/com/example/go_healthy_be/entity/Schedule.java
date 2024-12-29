@@ -26,6 +26,7 @@ public class Schedule {
         private String scheduleDescription;
         private LocalDateTime scheduleTime;
         private String scheduleType;
+       
         
         @ManyToOne
         @JoinColumn(name = "user_id",referencedColumnName = "userId")

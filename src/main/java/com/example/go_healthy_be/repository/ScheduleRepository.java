@@ -1,5 +1,6 @@
 package com.example.go_healthy_be.repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,4 +15,5 @@ public interface ScheduleRepository extends JpaRepository<Schedule, String> {
 
     List<Schedule> findAllByUser(User user);
 
+    List<Schedule> findAllByScheduleTimeBetween(LocalDateTime start, LocalDateTime end);
 }

@@ -19,4 +19,6 @@ public class ScheduleResponse {
     private String scheduleDescription;
     private LocalDateTime scheduleTime;
     private String scheduleType;
+   
+
 }

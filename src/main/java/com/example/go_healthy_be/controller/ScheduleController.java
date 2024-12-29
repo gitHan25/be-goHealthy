@@ -3,6 +3,7 @@ package com.example.go_healthy_be.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +26,7 @@ public class ScheduleController {
     @Autowired
     private ScheduleService scheduleService;
     
+     @CrossOrigin(origins = "http://127.0.0.1:3000")
     @PostMapping(
         path = "/api/schedule",
         consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -45,7 +47,7 @@ public class ScheduleController {
         ScheduleResponse scheduleResponse = scheduleService.get(user, scheduleId);
         return WebResponse.<ScheduleResponse>builder().data(scheduleResponse).build();
     }
-
+    @CrossOrigin(origins = "http://127.0.0.1:3000")
     @GetMapping(
         path = "/api/users/schedule",
         produces = MediaType.APPLICATION_JSON_VALUE

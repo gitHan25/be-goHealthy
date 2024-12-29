@@ -42,6 +42,7 @@ validationService.validate(request);
        user.setPassword(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
        user.setUsername(request.getUsername());
        user.setName(request.getName());
+       
         userRepository.save(user);
 
     }

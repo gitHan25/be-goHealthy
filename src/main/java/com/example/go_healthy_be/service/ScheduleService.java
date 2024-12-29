@@ -40,6 +40,7 @@ public class ScheduleService {
         schedule.setScheduleDescription(request.getScheduleDescription());
         schedule.setScheduleTime(request.getScheduleTime());
         schedule.setScheduleType(request.getScheduleType());
+       
         schedule.setUser(user);
 
         scheduleRepository.save(schedule);
@@ -55,6 +56,7 @@ public class ScheduleService {
                 .scheduleTime(schedule.getScheduleTime())
                 .scheduleType(schedule.getScheduleType())
                 .scheduleDescription(schedule.getScheduleDescription())
+                
                 .build();
             }
         

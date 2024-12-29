@@ -28,4 +28,6 @@ public class CreateScheduleRequest {
     
     @NotBlank
     private String scheduleType;
+
+   
 }
