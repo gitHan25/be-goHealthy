@@ -18,11 +18,12 @@ import lombok.NoArgsConstructor;
 public class CreateScheduleRequest {
     
     @NotBlank
+    @Size(max = 128)
     private String scheduleName;
 
    @Size(max = 250)
     private String scheduleDescription;
-
+    
     private LocalDateTime scheduleTime;
     
     @NotBlank

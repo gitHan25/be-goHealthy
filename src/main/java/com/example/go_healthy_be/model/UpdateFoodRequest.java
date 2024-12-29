@@ -25,12 +25,12 @@ public class UpdateFoodRequest {
     @NotBlank
     private String foodId;
 
-    @NotBlank
+    
     @Size(max = 128)
     private String foodName;
 
     @DecimalMin("0.0")
-    @DecimalMax("1000.0")
+    @DecimalMax("9999.0")
     private Double calories;
    
     private LocalDateTime consumptionDate;

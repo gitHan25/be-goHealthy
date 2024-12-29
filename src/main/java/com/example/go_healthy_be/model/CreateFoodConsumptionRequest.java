@@ -27,7 +27,7 @@ public class CreateFoodConsumptionRequest {
     private String foodName;
 
     @DecimalMin("0.0")
-    @DecimalMax("1000.0")
+    @DecimalMax("9999.0")
     private Double calories;
    
     private LocalDateTime consumptionDate;

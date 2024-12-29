@@ -68,7 +68,7 @@ public WebResponse<List<FoodConsumptionResponse>> getAllByUser(User user) {
 )
 public WebResponse<FoodConsumptionResponse> updateFood(User user, @RequestBody UpdateFoodRequest request, @PathVariable("foodId") String foodId) {
 
-request.setFoodId(foodId);
+    request.setFoodId(foodId);
 
     FoodConsumptionResponse foodConsumptionResponse = foodService.updateFood(user, request);
     return WebResponse.<FoodConsumptionResponse>builder().data(foodConsumptionResponse).build();
