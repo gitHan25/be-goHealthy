@@ -16,6 +16,9 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
+
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING)
 public class User {
 
     @Id
@@ -31,6 +34,9 @@ public class User {
 
     private String token;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role")
+    private Role role;
     @Column(name = "token_expired_at")
     private Long tokenExpiredAt;
 
@@ -39,4 +45,6 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Schedule> schedules;   
+
+
 }

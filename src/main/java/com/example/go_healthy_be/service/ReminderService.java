@@ -25,7 +25,8 @@ public class ReminderService {
     private JavaMailSender javaMailSender;
 
     @Scheduled(fixedRate=60000)
-    public void sendReminder(){
+    public void sendReminder() throws Exception{
+        try{
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime reminderWindowStart = now.plusMinutes(1);
         LocalDateTime reminderWindowEnd = now.minusMinutes(1);
@@ -33,6 +34,9 @@ public class ReminderService {
         for (Schedule schedule : schedules) {
             sendReminder(schedule);
         }
+    } catch (Exception e) {
+        System.out.println(e.getMessage());
+    }
     }
     private void sendReminder(Schedule schedule) {
          DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd;HH:mm");

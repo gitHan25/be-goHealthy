@@ -1,6 +1,7 @@
 package com.example.go_healthy_be.service;
 
 
+import com.example.go_healthy_be.entity.Role;
 import com.example.go_healthy_be.entity.User;
 
 import com.example.go_healthy_be.model.RegisterUserRequest;
@@ -42,6 +43,7 @@ validationService.validate(request);
        user.setPassword(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
        user.setUsername(request.getUsername());
        user.setName(request.getName());
+       user.setRole(Role.USER);
        
         userRepository.save(user);
 

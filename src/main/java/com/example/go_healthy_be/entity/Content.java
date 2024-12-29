@@ -7,7 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+
 
 
 @Getter
@@ -18,11 +19,11 @@ import java.util.Date;
 @Table(name = "content")
 public class Content {
   @Id
-
-    private  int id_content;
+  @Column(name = "id_content")
+  private  String contentId;
   private String title;
-  private String author;
-  private String body_content;
-  private Date created_at;
+
+  private String bodyContent;
+  private LocalDateTime created_at;
 
 }
