@@ -15,6 +15,7 @@ import com.example.go_healthy_be.entity.FoodConsumption;
 import com.example.go_healthy_be.entity.User;
 import com.example.go_healthy_be.model.CreateFoodConsumptionRequest;
 import com.example.go_healthy_be.model.FoodConsumptionResponse;
+import com.example.go_healthy_be.model.UpdateFoodRequest;
 import com.example.go_healthy_be.repository.FoodConsumptionRepository;
 
 @Service
@@ -42,13 +43,7 @@ public  FoodConsumptionResponse create( User user,CreateFoodConsumptionRequest r
 
     foodRepository.save(foodConsumption);
 
-    return FoodConsumptionResponse.builder()
-    .foodId(foodConsumption.getFoodId())
-    .foodName(foodConsumption.getFoodName())
-    .calories(foodConsumption.getCalories())
-    .consumptionDate(foodConsumption.getConsumptionDate())
-    .quantity(foodConsumption.getQuantity())
-    .build();
+    return toFoodResponse(foodConsumption); 
     }
 
     @Transactional(readOnly = true)
@@ -56,13 +51,7 @@ public  FoodConsumptionResponse create( User user,CreateFoodConsumptionRequest r
         FoodConsumption foodConsumption = foodRepository.findFirstByUserAndFoodId(user, food_id)
         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Food not found"));
 
-        return FoodConsumptionResponse.builder()
-        .foodId(foodConsumption.getFoodId())
-        .foodName(foodConsumption.getFoodName())
-        .calories(foodConsumption.getCalories())
-        .consumptionDate(foodConsumption.getConsumptionDate())
-        .quantity(foodConsumption.getQuantity())
-        .build();
+        return toFoodResponse(foodConsumption);
     }
 
     @Transactional(readOnly = true)
@@ -78,6 +67,39 @@ public  FoodConsumptionResponse create( User user,CreateFoodConsumptionRequest r
                         .build())
                 .collect(Collectors.toList());
     }
+
+    private FoodConsumptionResponse toFoodResponse( FoodConsumption foodConsumption) {
+        return FoodConsumptionResponse.builder()
+        .foodId(foodConsumption.getFoodId())
+        .foodName(foodConsumption.getFoodName())
+        .calories(foodConsumption.getCalories())
+        .consumptionDate(foodConsumption.getConsumptionDate())
+        .quantity(foodConsumption.getQuantity())
+        .build();
+    }
+
+    @Transactional
+    public FoodConsumptionResponse updateFood(User user, UpdateFoodRequest request){
+        validationService.validate(request);
+        FoodConsumption foodConsumption = foodRepository.findFirstByUserAndFoodId(user, request.getFoodId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Food not found"));
+        
+                foodConsumption.setFoodName(request.getFoodName());
+                foodConsumption.setCalories(request.getCalories());
+                foodConsumption.setConsumptionDate(request.getConsumptionDate());
+                foodConsumption.setQuantity(request.getQuantity());
+                
+                foodRepository.save(foodConsumption);
+    
+                return toFoodResponse(foodConsumption);
+            }
+
+            @Transactional
+            public void deleteById(User user, String foodId) {
+                FoodConsumption foodConsumption = foodRepository.findFirstByUserAndFoodId(user, foodId)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Food not found"));
+                foodRepository.delete(foodConsumption);
+            }
 
     }
 

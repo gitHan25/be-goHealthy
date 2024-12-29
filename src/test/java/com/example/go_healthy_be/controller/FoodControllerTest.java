@@ -29,6 +29,7 @@ import com.example.go_healthy_be.entity.FoodConsumption;
 import com.example.go_healthy_be.entity.User;
 import com.example.go_healthy_be.model.CreateFoodConsumptionRequest;
 import com.example.go_healthy_be.model.FoodConsumptionResponse;
+import com.example.go_healthy_be.model.UpdateFoodRequest;
 import com.example.go_healthy_be.model.WebResponse;
 import com.example.go_healthy_be.repository.FoodConsumptionRepository;
 import com.example.go_healthy_be.repository.UserRepository;
@@ -246,7 +247,79 @@ void getFoodConsumptionNotFound() throws Exception {
             assertEquals(300.0, foodResponse2.getCalories());
             assertEquals(1, foodResponse2.getQuantity());
         });
+
+
     }
+    @Test
+    void UpdateFoodConsumptionBadRequest() throws Exception {
+        UpdateFoodRequest request = new UpdateFoodRequest();
+        request.setFoodName("");
+        request.setConsumptionDate(null);
+        request.setCalories(-1.0);
+        request.setQuantity(-2);
+
+        mockMvc.perform(
+            put("/api/food-consumption/1234")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(request))
+            .header("X-API-TOKEN", "test")
+            ).andExpectAll(
+                status().isBadRequest()
+            
+            ).andDo(result -> {
+                WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {});
+           
+                assertNotNull(response.getErrors());
+            });
+        }
+        void UpdateFoodConsumptionSucces() throws Exception {
+            User user = userRepository.findByEmail("test@gmail.com").orElseThrow();
+            FoodConsumption foodConsumption = new FoodConsumption();
+        foodConsumption.setFoodId(UUID.randomUUID().toString());
+        foodConsumption.setUser(user);
+        foodConsumption.setFoodName("Nasi goreng");
+    
+        // Tetapkan tanggal konsumsi
+        LocalDateTime consumptionDate = LocalDateTime.now();
+        foodConsumption.setConsumptionDate(consumptionDate);
+        foodConsumption.setQuantity(2);
+        foodConsumption.setCalories(100.0);
+        foodConsumptionRepository.save(foodConsumption);
+            UpdateFoodRequest request = new UpdateFoodRequest();
+            request.setFoodName("Nasi Lemak");
+        
+            // Parsing string tanggal langsung ke LocalDateTime
+            String dateString = "31-12-2024"; // Format DD-MM-YYYY
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+            LocalDate date = LocalDate.parse(dateString, formatter);
+            request.setConsumptionDate(date.atStartOfDay()); // Atur waktu ke 00:00
+        
+            request.setQuantity(1);
+            request.setCalories(50.0);
+        
+            mockMvc.perform(
+                    put("/api/food-consumption/"+ foodConsumption.getFoodId())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request))
+                        .header("X-API-TOKEN", "test")
+                )
+                .andExpectAll(
+                    status().isOk()
+                )
+                .andDo(result -> {
+                    // Membaca respons JSON
+                    WebResponse<FoodConsumptionResponse> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {});
+        
+                    // Validasi hasil
+                    assertNull(response.getErrors());
+                    assertEquals(request.getFoodName(), response.getData().getFoodName());
+                    assertEquals(request.getQuantity(), response.getData().getQuantity());
+                    DateTimeFormatter responseFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+                    assertEquals(request.getConsumptionDate(), response.getData().getConsumptionDate().format(responseFormatter));
+                    assertEquals(request.getCalories(), response.getData().getCalories());
+                    assertTrue(foodConsumptionRepository.existsById(response.getData().getFoodId()));
+                });
+        }
 }
         
 
