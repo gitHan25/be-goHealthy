@@ -37,4 +37,6 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<FoodConsumption> foodConsumptions;
 
+    @OneToMany(mappedBy = "user")
+    private List<Schedule> schedules;   
 }
