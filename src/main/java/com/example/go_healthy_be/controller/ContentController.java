@@ -1,5 +1,7 @@
 package com.example.go_healthy_be.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,6 +18,7 @@ import com.example.go_healthy_be.entity.User;
 import com.example.go_healthy_be.model.ContentResponse;
 import com.example.go_healthy_be.model.CreateContentRequest;
 import com.example.go_healthy_be.model.UpdateContentRequest;
+
 import com.example.go_healthy_be.model.WebResponse;
 import com.example.go_healthy_be.service.ContentService;
 
@@ -68,4 +71,15 @@ public class ContentController {
             return WebResponse.<String>builder().data("Content with id "+contentId+" has been deleted").build();
         }
         
-}
+
+        @GetMapping(
+            path = "/api/contents",
+            produces = MediaType.APPLICATION_JSON_VALUE
+        )
+        public WebResponse<List<ContentResponse>> getAllContent(){
+            List<ContentResponse> contentResponses = contentService.getAllContent();
+            return WebResponse.<List<ContentResponse>>builder().data(contentResponses).build();
+        }
+
+
+    }

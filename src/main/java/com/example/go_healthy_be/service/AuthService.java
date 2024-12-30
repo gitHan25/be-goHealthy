@@ -37,6 +37,7 @@ public class AuthService {
             return TokenResponse.builder()
             .token(user.getToken())
             .expiredAt(user.getTokenExpiredAt())
+            .role(user.getRole())
             .build();
         }else{
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Email or password wrong");
@@ -49,6 +50,7 @@ public class AuthService {
     public void logout(User user){
         user.setToken(null);
         user.setTokenExpiredAt(null);
+        
         userRepository.save(user);
     }
 

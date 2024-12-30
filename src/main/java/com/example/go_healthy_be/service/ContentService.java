@@ -1,7 +1,10 @@
 package com.example.go_healthy_be.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -91,4 +94,13 @@ public class ContentService {
 
         contentRepository.delete(content);
     }
-}
+
+    @Transactional(readOnly = true)
+    public List<ContentResponse> getAllContent(){
+        List<Content> contents = contentRepository.findAll();
+        return contents.stream()
+                .map(content -> new ContentResponse(content.getContentId(), content.getTitle(),content.getBodyContent(),content.getCreated_at()) )
+                .collect(Collectors.toList());
+        
+    }
+    }

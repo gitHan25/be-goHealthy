@@ -1,6 +1,6 @@
 package com.example.go_healthy_be.model;
 
-import com.example.go_healthy_be.entity.Role;
+import java.time.LocalDateTime;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,9 +11,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class TokenResponse {
 
-    private String token;
-    private Long expiredAt;
-    private Role role;
+public class MotivationMessageResponse {
+
+    private String motivationId;
+    private String message;
+    private LocalDateTime createdAt;
+
 }

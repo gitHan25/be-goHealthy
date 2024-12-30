@@ -63,7 +63,7 @@ validationService.validate(request);
         }
         List<User> users = userRepository.findAll();
         return users.stream()
-            .map(user -> new UserResponse(user.getEmail(), user.getUsername(),user.getName()))
+            .map(user -> new UserResponse(user.getEmail(), user.getUsername(),user.getName(),user.getRole()))
             .collect(Collectors.toList());
     }   
     
