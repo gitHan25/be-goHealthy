@@ -15,6 +15,7 @@ public class WebConfiguration implements WebMvcConfigurer{
     @Autowired
     private UserArgumentResolver userArgumentResolver;
 
+    @SuppressWarnings("null")
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers){
         WebMvcConfigurer.super.addArgumentResolvers(resolvers);
