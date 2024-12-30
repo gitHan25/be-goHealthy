@@ -35,5 +35,3 @@ build/
 ##database ignore
 database.sql
 
-
-src/main/resources/
