@@ -8,9 +8,11 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.server.ResponseStatusException;
-import com.example.go_healthy_be.repository.UserRepository;
+
 import com.example.go_healthy_be.entity.Role;
 import com.example.go_healthy_be.entity.User;
+import com.example.go_healthy_be.repository.UserRepository;
+
 import jakarta.servlet.http.HttpServletRequest;
 
 @Component
@@ -20,10 +22,11 @@ public class UserArgumentResolver implements HandlerMethodArgumentResolver {
     private UserRepository userRepository;
 
     @Override
-    public boolean supportsParameter(MethodParameter parameter) {
+    public boolean supportsParameter(@SuppressWarnings("null") MethodParameter parameter) {
         return User.class.equals(parameter.getParameterType()) || Role.class.equals(parameter.getParameterType());
     }
 
+    @SuppressWarnings("null")
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest servletRequest = (HttpServletRequest) webRequest.getNativeRequest();
