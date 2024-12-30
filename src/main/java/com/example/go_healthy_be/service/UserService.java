@@ -56,12 +56,17 @@ validationService.validate(request);
         .username(user.getUsername())
         .build();
     }
-    public List<UserResponse> getAllUsers() {
+    public List<UserResponse> getAllUsers(Role role){ 
+
+        if(role != Role.ADMIN){
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authorized to access this feature");
+        }
         List<User> users = userRepository.findAll();
         return users.stream()
             .map(user -> new UserResponse(user.getEmail(), user.getUsername(),user.getName()))
             .collect(Collectors.toList());
-    }
+    }   
+    
     @Transactional
     public UserResponse updateUser(User user,UpdateUserRequest request){
         validationService.validate(request);

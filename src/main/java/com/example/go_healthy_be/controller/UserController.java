@@ -2,6 +2,7 @@ package com.example.go_healthy_be.controller;
 
 
 
+import com.example.go_healthy_be.entity.Role;
 import com.example.go_healthy_be.entity.User;
 import com.example.go_healthy_be.model.RegisterUserRequest;
 import com.example.go_healthy_be.model.UpdateUserRequest;
@@ -43,9 +44,9 @@ public class UserController {
     @CrossOrigin(origins = "http://127.0.0.1:3000")
     @GetMapping(path = "/api/users", produces = MediaType.APPLICATION_JSON_VALUE)
     
-    public WebResponse<List<UserResponse>> getAllUsers(User user) {
+    public WebResponse<List<UserResponse>> getAllUsers(Role role) {
        
-        List<UserResponse> users = userService.getAllUsers();
+        List<UserResponse> users = userService.getAllUsers(role);
         return WebResponse.<List<UserResponse>>builder().data(users).build();
     }
     

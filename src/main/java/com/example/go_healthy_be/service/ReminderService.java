@@ -39,15 +39,22 @@ public class ReminderService {
     }
     }
     private void sendReminder(Schedule schedule) {
-         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd;HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd;HH:mm");
         String formattedScheduleTime = schedule.getScheduleTime().format(formatter);
-
+    
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(schedule.getUser().getEmail());
-        message.setSubject("Reminder: " + schedule.getScheduleName());
-        message.setText("Ini adalah pesan pengingat kegiatan anda: " + schedule.getScheduleName() + " pada waktu " + formattedScheduleTime);
+        message.setSubject("📅 Reminder: " + schedule.getScheduleName());
+        message.setText(
+            "Halo " + schedule.getUser().getName() + ",\n\n" +
+            "Kami ingin mengingatkan kegiatan penting yang telah kamu jadwalkan:\n\n" +
+            "📌 **" + schedule.getScheduleName() + "**\n" +
+            "🕒 **Waktu:** " + formattedScheduleTime + "\n\n" +
+            "Selamat beraktivitas dan semoga harimu menyenangkan! 😊\n\n" +
+            "Salam hangat,\n" +
+            "Tim Go Healthy"
+        );
         javaMailSender.send(message);
     }
-
 }
 

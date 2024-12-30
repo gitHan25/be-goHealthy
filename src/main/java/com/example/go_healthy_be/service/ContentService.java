@@ -13,6 +13,7 @@ import com.example.go_healthy_be.entity.Role;
 import com.example.go_healthy_be.entity.User;
 import com.example.go_healthy_be.model.ContentResponse;
 import com.example.go_healthy_be.model.CreateContentRequest;
+import com.example.go_healthy_be.model.UpdateContentRequest;
 import com.example.go_healthy_be.repository.ContentRepository;
 
 
@@ -54,10 +55,40 @@ public class ContentService {
     }
 
     @Transactional(readOnly = true)
-    public ContentResponse getContentById(Role role,String contentId) {
+    public ContentResponse getContentById(String contentId) {
         Content content = contentRepository.findById(contentId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Content not found"));
 
         return toContentResponse(content);
     }    
+
+    @Transactional 
+    public ContentResponse updateContent(User user, Role role, String contentId, UpdateContentRequest request) {
+        validationService.validate(request);
+
+        if (user == null || role != Role.ADMIN) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authorized to update content");
+        }
+
+        Content content = contentRepository.findById(contentId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Content not found"));
+
+        content.setTitle(request.getContentTitle());
+        content.setBodyContent(request.getBodyContent());
+        contentRepository.save(content);
+
+        return toContentResponse(content);
+    }
+
+    @Transactional
+    public void deleteContentById(User user, Role role, String contentId) {
+        if (user == null || role != Role.ADMIN) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authorized to delete content");
+        }
+
+        Content content = contentRepository.findById(contentId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Content not found"));
+
+        contentRepository.delete(content);
+    }
 }
