@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+
 public class UserController {
 
 
@@ -51,7 +51,7 @@ public class UserController {
         return WebResponse.<List<UserResponse>>builder().data(users).build();
     }
     
-    
+    @CrossOrigin(origins = "http://127.0.0.1:3000")
     @PatchMapping(
         path="/api/users/current",
         consumes = MediaType.APPLICATION_JSON_VALUE,

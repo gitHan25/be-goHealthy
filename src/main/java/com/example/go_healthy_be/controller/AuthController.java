@@ -15,7 +15,7 @@ import com.example.go_healthy_be.model.WebResponse;
 import com.example.go_healthy_be.service.AuthService;
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+
 public class AuthController {
 
     @Autowired

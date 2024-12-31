@@ -24,13 +24,13 @@ import com.example.go_healthy_be.model.WebResponse;
 import com.example.go_healthy_be.service.ContentService;
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+
 public class ContentController {
 
         @Autowired
         private ContentService contentService;  
 
-
+        @CrossOrigin(origins = "http://127.0.0.1:3000")
     @PostMapping(
         path = "/api/content",
         consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -41,7 +41,7 @@ public class ContentController {
         ContentResponse contentResponse = contentService.createContent(user, role,request);
         return WebResponse.<ContentResponse>builder().data(contentResponse).build();
     }
-
+    @CrossOrigin(origins = "http://127.0.0.1:3000")
     @GetMapping(
         path = "/api/content/{contentId}",
         produces = MediaType.APPLICATION_JSON_VALUE
@@ -50,7 +50,7 @@ public class ContentController {
         ContentResponse contentResponse = contentService.getContentById(contentId);
         return WebResponse.<ContentResponse>builder().data(contentResponse).build();
     }
-
+    @CrossOrigin(origins = "http://127.0.0.1:3000")
     @PutMapping(
         path = "/api/content/{contentId}",
         consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -62,7 +62,7 @@ public class ContentController {
             ContentResponse contentResponse = contentService.updateContent(user,role,contentId, request);
             return WebResponse.<ContentResponse>builder().data(contentResponse).build();
         }
-
+        @CrossOrigin(origins = "http://127.0.0.1:3000")
         @DeleteMapping(
             path = "/api/content/{contentId}",
             produces = MediaType.APPLICATION_JSON_VALUE
@@ -72,7 +72,7 @@ public class ContentController {
             return WebResponse.<String>builder().data("Content with id "+contentId+" has been deleted").build();
         }
         
-
+        @CrossOrigin(origins = "http://127.0.0.1:3000")
         @GetMapping(
             path = "/api/contents",
             produces = MediaType.APPLICATION_JSON_VALUE

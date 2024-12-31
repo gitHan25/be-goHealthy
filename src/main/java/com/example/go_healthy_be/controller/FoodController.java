@@ -22,7 +22,7 @@ import com.example.go_healthy_be.model.WebResponse;
 import com.example.go_healthy_be.service.FoodService;
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
+
 public class FoodController {
 
 @Autowired

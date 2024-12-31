@@ -1,7 +1,5 @@
 package com.example.go_healthy_be.controller;
-
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -12,7 +10,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.example.go_healthy_be.entity.User;
 import com.example.go_healthy_be.model.CreateScheduleRequest;
 import com.example.go_healthy_be.model.ScheduleResponse;
@@ -22,13 +19,12 @@ import com.example.go_healthy_be.service.ScheduleService;
 
 
 @RestController
-@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ScheduleController {
 
     @Autowired
     private ScheduleService scheduleService;
     
-     @CrossOrigin(origins = "http://127.0.0.1:3000")
+    @CrossOrigin(origins = "http://127.0.0.1:3000")
     @PostMapping(
         path = "/api/schedule",
         consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -39,7 +35,7 @@ public class ScheduleController {
         ScheduleResponse scheduleResponse = scheduleService.create(user, request);
         return WebResponse.<ScheduleResponse>builder().data(scheduleResponse).build();
     }
-
+    @CrossOrigin(origins = "http://127.0.0.1:3000")
     @GetMapping(
         path = "/api/schedule/{scheduleId}",
         produces = MediaType.APPLICATION_JSON_VALUE
@@ -60,7 +56,7 @@ public class ScheduleController {
     }
 
     
-
+    @CrossOrigin(origins = "http://127.0.0.1:3000")
     @PutMapping(
         path = "/api/schedule/{scheduleId}",
         consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -71,7 +67,7 @@ public class ScheduleController {
         ScheduleResponse scheduleResponse = scheduleService.updateSchedule(user,request);
         return WebResponse.<ScheduleResponse>builder().data(scheduleResponse).build();
     }
-
+    @CrossOrigin(origins = "http://127.0.0.1:3000")
     @DeleteMapping(
         path = "/api/schedule/{scheduleId}",
         produces = MediaType.APPLICATION_JSON_VALUE
