@@ -17,14 +17,14 @@ import com.example.go_healthy_be.model.UpdateScheduleRequest;
 import com.example.go_healthy_be.model.WebResponse;
 import com.example.go_healthy_be.service.ScheduleService;
 
-
+@CrossOrigin(origins = "*")
 @RestController
 public class ScheduleController {
 
     @Autowired
     private ScheduleService scheduleService;
     
-    @CrossOrigin(origins = "http://127.0.0.1:3000")
+
     @PostMapping(
         path = "/api/schedule",
         consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -35,7 +35,7 @@ public class ScheduleController {
         ScheduleResponse scheduleResponse = scheduleService.create(user, request);
         return WebResponse.<ScheduleResponse>builder().data(scheduleResponse).build();
     }
-    @CrossOrigin(origins = "http://127.0.0.1:3000")
+  
     @GetMapping(
         path = "/api/schedule/{scheduleId}",
         produces = MediaType.APPLICATION_JSON_VALUE
@@ -45,7 +45,7 @@ public class ScheduleController {
         ScheduleResponse scheduleResponse = scheduleService.get(user, scheduleId);
         return WebResponse.<ScheduleResponse>builder().data(scheduleResponse).build();
     }
-    @CrossOrigin(origins = "http://127.0.0.1:3000")
+    
     @GetMapping(
         path = "/api/users/schedule",
         produces = MediaType.APPLICATION_JSON_VALUE
@@ -56,7 +56,7 @@ public class ScheduleController {
     }
 
     
-    @CrossOrigin(origins = "http://127.0.0.1:3000")
+ 
     @PutMapping(
         path = "/api/schedule/{scheduleId}",
         consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -67,7 +67,7 @@ public class ScheduleController {
         ScheduleResponse scheduleResponse = scheduleService.updateSchedule(user,request);
         return WebResponse.<ScheduleResponse>builder().data(scheduleResponse).build();
     }
-    @CrossOrigin(origins = "http://127.0.0.1:3000")
+  
     @DeleteMapping(
         path = "/api/schedule/{scheduleId}",
         produces = MediaType.APPLICATION_JSON_VALUE

@@ -14,14 +14,14 @@ import com.example.go_healthy_be.model.TokenResponse;
 import com.example.go_healthy_be.model.WebResponse;
 import com.example.go_healthy_be.service.AuthService;
 
+@CrossOrigin(origins = "*")
 @RestController
-
 public class AuthController {
 
     @Autowired
     private AuthService authService;
     
-@CrossOrigin(origins = "http://127.0.0.1:3000")
+
 @PostMapping(
     path ="/api/auth/login",
     consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -33,7 +33,7 @@ public class AuthController {
         TokenResponse tokenResponse = authService.login(request);
         return WebResponse.<TokenResponse>builder().data(tokenResponse).build();
     }
-    @CrossOrigin(origins = "http://127.0.0.1:3000")
+
     @DeleteMapping(
         path = "/api/auth/logout",
         produces = MediaType.APPLICATION_JSON_VALUE

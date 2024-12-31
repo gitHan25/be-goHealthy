@@ -21,6 +21,7 @@ import com.example.go_healthy_be.model.WebResponse;
 
 import com.example.go_healthy_be.service.FoodService;
 
+@CrossOrigin(origins = "*")
 @RestController
 
 public class FoodController {
@@ -29,7 +30,7 @@ public class FoodController {
 private FoodService foodService;
 
 
-@CrossOrigin(origins = "http://127.0.0.1:3000")
+
 @PostMapping(
     path = "/api/food-consumption",
     consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -40,7 +41,7 @@ public WebResponse<FoodConsumptionResponse> create(User user, @RequestBody Creat
     return WebResponse.<FoodConsumptionResponse>builder().data(foodConsumptionResponse).build();
     }
 
-@CrossOrigin(origins = "http://127.0.0.1:3000")
+
 @GetMapping(
     path = "/api/food-consumption/{foodId}",
     produces = MediaType.APPLICATION_JSON_VALUE
@@ -51,7 +52,6 @@ public WebResponse<FoodConsumptionResponse> get(User user, @PathVariable("foodId
     }
 
 
-     @CrossOrigin(origins = "http://127.0.0.1:3000")
      @GetMapping(
         path = "/api/users/food-consumption",
         produces = MediaType.APPLICATION_JSON_VALUE
@@ -61,7 +61,7 @@ public WebResponse<List<FoodConsumptionResponse>> getAllByUser(User user) {
     return WebResponse.<List<FoodConsumptionResponse>>builder().data(foodConsumptionResponses).build();
 }
 
-@CrossOrigin(origins = "http://127.0.0.1:3000")
+
 @PutMapping(
     path = "/api/food-consumption/{foodId}",
     consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -75,7 +75,7 @@ public WebResponse<FoodConsumptionResponse> updateFood(User user, @RequestBody U
     return WebResponse.<FoodConsumptionResponse>builder().data(foodConsumptionResponse).build();
     }
 
-    @CrossOrigin(origins = "http://127.0.0.1:3000")
+    
     @DeleteMapping(
     path = "/api/food-consumption/{foodId}",
     produces = MediaType.APPLICATION_JSON_VALUE

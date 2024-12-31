@@ -21,6 +21,7 @@ import com.example.go_healthy_be.model.UpdateMessageRequest;
 import com.example.go_healthy_be.model.WebResponse;
 import com.example.go_healthy_be.service.MotivationMessageService;
 
+@CrossOrigin(origins = "*")
 @RestController
 
 public class MotivationController {
@@ -29,7 +30,6 @@ public class MotivationController {
     @Autowired
     private MotivationMessageService motivationMessageService;
 
-    @CrossOrigin(origins = "http://127.0.0.1:3000")
     @PostMapping(
         path = "/api/motivation",
         consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -40,7 +40,7 @@ public class MotivationController {
         return WebResponse.<MotivationMessageResponse>builder().data(motivationMessageResponse).build();
     }
 
- @CrossOrigin(origins = "http://127.0.0.1:3000")
+
     @GetMapping(
         path = "/api/motivation/{motivationId}",
         produces = MediaType.APPLICATION_JSON_VALUE
@@ -49,7 +49,7 @@ public class MotivationController {
         MotivationMessageResponse motivationMessageResponse = motivationMessageService.getMotivationById(motivationId);
         return WebResponse.<MotivationMessageResponse>builder().data(motivationMessageResponse).build();
     }
-    @CrossOrigin(origins = "http://127.0.0.1:3000")
+  
     @DeleteMapping(
         path = "/api/motivation/{motivationId}",
         produces = MediaType.APPLICATION_JSON_VALUE
@@ -58,7 +58,7 @@ public class MotivationController {
         motivationMessageService.deleteMessageById(user, role, motivationId);
         return WebResponse.<String>builder().data("OK").build();
     }
-    @CrossOrigin(origins = "http://127.0.0.1:3000")
+
     @PutMapping(
         path = "/api/motivation/{motivationId}",
         consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -70,7 +70,7 @@ public class MotivationController {
         MotivationMessageResponse motivationMessageResponse = motivationMessageService.updateMessage(user, role, motivationId, request);
         return WebResponse.<MotivationMessageResponse>builder().data(motivationMessageResponse).build();
     }
-    @CrossOrigin(origins = "http://127.0.0.1:3000")
+ 
     @GetMapping(
         path = "/api/motivations",
         produces = MediaType.APPLICATION_JSON_VALUE
