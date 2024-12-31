@@ -20,7 +20,9 @@ import com.example.go_healthy_be.model.UpdateScheduleRequest;
 import com.example.go_healthy_be.model.WebResponse;
 import com.example.go_healthy_be.service.ScheduleService;
 
+
 @RestController
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 public class ScheduleController {
 
     @Autowired
