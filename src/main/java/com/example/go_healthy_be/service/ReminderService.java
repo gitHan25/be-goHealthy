@@ -39,10 +39,6 @@ public class ReminderService {
     }
     }
     private void sendReminder(Schedule schedule) {
-   
-
-       
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         String formattedScheduleTime = schedule.getScheduleTime().format(formatter);
 
