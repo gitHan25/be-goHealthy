@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +20,7 @@ import com.example.go_healthy_be.model.UpdateUserRequest;
 import com.example.go_healthy_be.model.UserResponse;
 import com.example.go_healthy_be.model.WebResponse;
 import com.example.go_healthy_be.service.UserService;
-
+@CrossOrigin( origins = "*")
 @RestController
 
 public class UserController {
