@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,10 +17,9 @@ import com.example.go_healthy_be.model.CreateFoodConsumptionRequest;
 import com.example.go_healthy_be.model.FoodConsumptionResponse;
 import com.example.go_healthy_be.model.UpdateFoodRequest;
 import com.example.go_healthy_be.model.WebResponse;
-
 import com.example.go_healthy_be.service.FoodService;
 
-@CrossOrigin(origins = "*")
+
 @RestController
 
 public class FoodController {
