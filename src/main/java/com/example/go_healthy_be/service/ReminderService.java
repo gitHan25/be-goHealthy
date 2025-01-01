@@ -2,6 +2,8 @@ package com.example.go_healthy_be.service;
 
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -27,9 +29,11 @@ public class ReminderService {
     @Scheduled(fixedRate=60000)
     public void sendReminder() throws Exception{
         try{
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime reminderWindowStart = now.plusMinutes(1);
-        LocalDateTime reminderWindowEnd = now.minusMinutes(1);
+
+            LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
+            LocalDateTime reminderWindowStart = now.plusMinutes(1);
+            LocalDateTime reminderWindowEnd = now.minusMinutes(1);
+
         List<Schedule> schedules = scheduleRepository.findAllByScheduleTimeBetween(reminderWindowEnd, reminderWindowStart);
         for (Schedule schedule : schedules) {
             sendReminder(schedule);
@@ -39,14 +43,20 @@ public class ReminderService {
     }
     }
     private void sendReminder(Schedule schedule) {
+        ZoneId userZoneId = ZoneId.of("Asia/Jakarta");
+
+        // Konversi waktu server (UTC) ke zona waktu pengguna
+        ZonedDateTime userScheduleTime = schedule.getScheduleTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(userZoneId);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        String formattedScheduleTime = schedule.getScheduleTime().format(formatter);
+        String formattedScheduleTime = userScheduleTime.format(formatter);
+
+        
 
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(schedule.getUser().getEmail());
         message.setSubject("📅 Reminder: " + schedule.getScheduleName());
         message.setText(
-            "Halo " + schedule.getUser().getName() + ",\n\n" +  
+            "Halo " + schedule.getUser().getName() + ",\n\n" +
             "Kami ingin mengingatkan kegiatan penting yang telah kamu jadwalkan:\n\n" +
             "📌 **" + schedule.getScheduleName() + "**\n" +
             "🕒 **Waktu:** " + formattedScheduleTime + "\n\n" +
