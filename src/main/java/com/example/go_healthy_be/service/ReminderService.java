@@ -46,7 +46,7 @@ public class ReminderService {
         ZoneId userZoneId = ZoneId.of("Asia/Jakarta");
 
         // Konversi waktu server (UTC) ke zona waktu pengguna
-        ZonedDateTime userScheduleTime = schedule.getScheduleTime().atZone(ZoneId.of("UTC")).withZoneSameInstant(userZoneId);
+        ZonedDateTime userScheduleTime = schedule.getScheduleTime().atZone(ZoneId.of("Asia/Jakarta")).withZoneSameInstant(userZoneId);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         String formattedScheduleTime = userScheduleTime.format(formatter);
 
