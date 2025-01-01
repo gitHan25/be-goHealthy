@@ -2,15 +2,16 @@ package com.example.go_healthy_be.service;
 
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
 import com.example.go_healthy_be.entity.Schedule;
 import com.example.go_healthy_be.repository.ScheduleRepository;
 
@@ -39,14 +40,19 @@ public class ReminderService {
     }
     }
     private void sendReminder(Schedule schedule) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd;HH:mm");
-        String formattedScheduleTime = schedule.getScheduleTime().format(formatter);
-    
+        ZoneId userZoneId = ZoneId.of("Asia/Jakarta");
+
+        // Konversi waktu server ke zona waktu pengguna
+        LocalDateTime userScheduleTime = schedule.getScheduleTime().atZone(ZoneId.systemDefault()).withZoneSameInstant(userZoneId).toLocalDateTime();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String formattedScheduleTime = userScheduleTime.format(formatter);
+
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(schedule.getUser().getEmail());
         message.setSubject("📅 Reminder: " + schedule.getScheduleName());
         message.setText(
-            "Halo " + schedule.getUser().getName() + ",\n\n" +
+            "Halo " + schedule.getUser().getName() + ",\n\n" +  
             "Kami ingin mengingatkan kegiatan penting yang telah kamu jadwalkan:\n\n" +
             "📌 **" + schedule.getScheduleName() + "**\n" +
             "🕒 **Waktu:** " + formattedScheduleTime + "\n\n" +
