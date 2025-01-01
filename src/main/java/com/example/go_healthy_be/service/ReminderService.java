@@ -30,7 +30,7 @@ public class ReminderService {
     public void sendReminder() throws Exception{
         try{
 
-            LocalDateTime now = LocalDateTime.now(ZoneId.of("UTC"));
+            LocalDateTime now = LocalDateTime.now(ZoneId.of("Asia/Jakarta"));
             LocalDateTime reminderWindowStart = now.plusMinutes(1);
             LocalDateTime reminderWindowEnd = now.minusMinutes(1);
 
