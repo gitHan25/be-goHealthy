@@ -1,1 +1,1 @@
-show tables;
+desc motivation_message;

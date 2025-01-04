@@ -3,6 +3,7 @@ package com.example.go_healthy_be.service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,7 +31,7 @@ public class MotivationMessageService {
     public MotivationMessageResponse createMessage(User user, Role role, CreateMotivationRequest request){
         validationService.validate(request);
         if(user == null || role != Role.ADMIN){
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authorized to create content");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You are not authorized to create message");
         }
 
         Motivation motivation = new Motivation();
@@ -82,11 +83,7 @@ public class MotivationMessageService {
     public List<MotivationMessageResponse> getAllMessage(){
         List<Motivation> motivations = motivationMessageRepository.findAll();
         return motivations.stream()
-                .map(motivation -> MotivationMessageResponse.builder()
-                        .motivationId(motivation.getMotivationId())
-                        .message(motivation.getMessage())
-                        .createdAt(motivation.getCreatedAt())
-                        .build())
-                .collect(java.util.stream.Collectors.toList());
+                .map(motivation ->new MotivationMessageResponse(motivation.getMotivationId(), motivation.getMessage(), motivation.getCreatedAt()))
+                .collect(Collectors.toList());
     }
 }

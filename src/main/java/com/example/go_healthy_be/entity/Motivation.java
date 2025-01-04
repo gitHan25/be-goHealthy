@@ -20,7 +20,7 @@ import lombok.Setter;
 public class Motivation {
 
     @Id
-    @Column(name="id_motivation")
+    @Column(name="id_motivation_message")
     private String motivationId;
     private String message;
     @Column(name="created_at")
