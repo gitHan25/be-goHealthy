@@ -32,7 +32,7 @@ public class CreateFoodConsumptionRequest {
    
     private LocalDateTime consumptionDate;
 
-    @Min(0)
+    @Min(1)
     @Max(1000)
     private int quantity;
 

@@ -2,7 +2,6 @@ package com.example.go_healthy_be.service;
 
 import java.util.UUID;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,7 @@ public class AuthService {
         validationService.validate(request);
 
         User user = userRepository.findByEmail(request.getEmail())
-        .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Email or password wrong"));
+        .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Account tidak ditemukan"));
 
         if(BCrypt.checkpw(request.getPassword(), user.getPassword())){
             user.setToken(UUID.randomUUID().toString());

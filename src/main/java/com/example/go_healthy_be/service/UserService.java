@@ -1,9 +1,17 @@
 package com.example.go_healthy_be.service;
 
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.example.go_healthy_be.entity.Role;
 import com.example.go_healthy_be.entity.User;
-
 import com.example.go_healthy_be.model.RegisterUserRequest;
 import com.example.go_healthy_be.model.UpdateUserRequest;
 import com.example.go_healthy_be.model.UserResponse;
@@ -11,16 +19,6 @@ import com.example.go_healthy_be.repository.UserRepository;
 import com.example.go_healthy_be.security.BCrypt;
 
 import jakarta.transaction.Transactional;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-
-import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 
 
@@ -44,8 +42,7 @@ validationService.validate(request);
        user.setUsername(request.getUsername());
        user.setName(request.getName());
        user.setRole(Role.USER);
-       
-        userRepository.save(user);
+       userRepository.save(user);
 
     }
 

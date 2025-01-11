@@ -1,11 +1,6 @@
 package com.example.go_healthy_be.controller;
 
 
-import static org.junit.jupiter.api.Assertions.*;
-
-
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -13,14 +8,23 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.UUID;
 
-import org.springframework.http.MediaType;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.servlet.MockMvc;
-
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.go_healthy_be.entity.FoodConsumption;
 import com.example.go_healthy_be.entity.User;
@@ -29,6 +33,7 @@ import com.example.go_healthy_be.model.FoodConsumptionResponse;
 import com.example.go_healthy_be.model.UpdateFoodRequest;
 import com.example.go_healthy_be.model.WebResponse;
 import com.example.go_healthy_be.repository.FoodConsumptionRepository;
+import com.example.go_healthy_be.repository.ScheduleRepository;
 import com.example.go_healthy_be.repository.UserRepository;
 import com.example.go_healthy_be.security.BCrypt;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -44,7 +49,8 @@ public class FoodControllerTest {
     private UserRepository userRepository;
     @Autowired
     private FoodConsumptionRepository foodConsumptionRepository;
-    
+    @Autowired
+    private ScheduleRepository scheduleRepository;
     @Autowired
   private  ObjectMapper objectMapper;
 
@@ -52,7 +58,9 @@ public class FoodControllerTest {
    @BeforeEach
     void setUp() {
         TimeZone.setDefault(TimeZone.getTimeZone("UTC")); 
+        
         foodConsumptionRepository.deleteAll();
+        scheduleRepository.deleteAll();
         userRepository.deleteAll();
        User user = new User();
        user.setUsername("test");
@@ -87,7 +95,7 @@ public class FoodControllerTest {
             });
         }
         @Test
-void CreateFoodConsumptionSucces() throws Exception {
+void CreateFoodConsumptionSuccess() throws Exception {
     CreateFoodConsumptionRequest request = new CreateFoodConsumptionRequest();
     request.setFoodName("Nasi goreng");
 
@@ -147,7 +155,7 @@ void getFoodConsumptionNotFound() throws Exception {
     }
     @Test
     void getFoodConsumptionSucces() throws Exception {
-        // Ambil user untuk testing
+    
         User user = userRepository.findByEmail("test@gmail.com").orElseThrow();
     
         // Buat objek FoodConsumption untuk testing
@@ -156,7 +164,7 @@ void getFoodConsumptionNotFound() throws Exception {
         foodConsumption.setUser(user);
         foodConsumption.setFoodName("Nasi goreng");
     
-        // Tetapkan tanggal konsumsi
+      
         LocalDateTime consumptionDate = LocalDateTime.now();
         foodConsumption.setConsumptionDate(consumptionDate);
         foodConsumption.setQuantity(2);
@@ -174,17 +182,16 @@ void getFoodConsumptionNotFound() throws Exception {
                 status().isOk()
         )
         .andDo(result -> {
-            // Parse JSON respons
+            
             WebResponse<FoodConsumptionResponse> response = objectMapper.readValue(
                     result.getResponse().getContentAsString(),
                     new TypeReference<>() {}
             );
     
-            // Debugging log
+         
             System.out.println("Expected Date: " + consumptionDate);
             System.out.println("Response Date: " + response.getData().getConsumptionDate());
     
-            // Validasi hasil dari API
             assertNull(response.getErrors());
             assertEquals(foodConsumption.getFoodId(), response.getData().getFoodId());
             assertEquals(foodConsumption.getFoodName(), response.getData().getFoodName());
@@ -224,7 +231,7 @@ void getFoodConsumptionNotFound() throws Exception {
         foodConsumptionRepository.save(foodConsumption2);
 
         mockMvc.perform(
-                get("/api/users/" + user.getUserId() + "/food-consumption")
+                get("/api/users/food-consumption")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("X-API-TOKEN", "test")
@@ -234,12 +241,12 @@ void getFoodConsumptionNotFound() throws Exception {
             assertNull(response.getErrors());
             assertEquals(2, response.getData().size());
 
-            FoodConsumptionResponse foodResponse1 = response.getData().get(0);
+            FoodConsumptionResponse foodResponse1 = response.getData().get(1);
             assertEquals("Nasi goreng", foodResponse1.getFoodName());
             assertEquals(100.0, foodResponse1.getCalories());
             assertEquals(2, foodResponse1.getQuantity());
 
-            FoodConsumptionResponse foodResponse2 = response.getData().get(1);
+            FoodConsumptionResponse foodResponse2 = response.getData().get(0);
             assertEquals("Ayam Bakar", foodResponse2.getFoodName());
             assertEquals(300.0, foodResponse2.getCalories());
             assertEquals(1, foodResponse2.getQuantity());
@@ -269,6 +276,7 @@ void getFoodConsumptionNotFound() throws Exception {
                 assertNotNull(response.getErrors());
             });
         }
+        @Test
         void UpdateFoodConsumptionSucces() throws Exception {
             User user = userRepository.findByEmail("test@gmail.com").orElseThrow();
             FoodConsumption foodConsumption = new FoodConsumption();
@@ -312,11 +320,45 @@ void getFoodConsumptionNotFound() throws Exception {
                     assertEquals(request.getFoodName(), response.getData().getFoodName());
                     assertEquals(request.getQuantity(), response.getData().getQuantity());
                     DateTimeFormatter responseFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-                    assertEquals(request.getConsumptionDate(), response.getData().getConsumptionDate().format(responseFormatter));
+                    assertEquals(request.getConsumptionDate().format(responseFormatter), response.getData().getConsumptionDate().format(responseFormatter));
                     assertEquals(request.getCalories(), response.getData().getCalories());
                     assertTrue(foodConsumptionRepository.existsById(response.getData().getFoodId()));
                 });
         }
+@Test
+void deleteFoodByIdSuccess() throws Exception {
+    User user = userRepository.findByEmail("test@gmail.com").orElseThrow();
+    FoodConsumption foodConsumption = new FoodConsumption();
+    foodConsumption.setFoodId(UUID.randomUUID().toString());
+    foodConsumption.setUser(user);
+    foodConsumption.setFoodName("Nasi goreng");
+    LocalDateTime consumptionDate = LocalDateTime.now();
+    foodConsumption.setConsumptionDate(consumptionDate);
+    foodConsumption.setQuantity(2);
+    foodConsumption.setCalories(100.0);
+    foodConsumptionRepository.save(foodConsumption);
+
+    mockMvc.perform(
+             delete("/api/food-consumption/" + foodConsumption.getFoodId())
+            .header("X-API-TOKEN", "test")
+            .accept(MediaType.APPLICATION_JSON))
+        .andExpect(status().isOk())
+        .andDo(result -> {
+            WebResponse<String> response = objectMapper.readValue(
+                result.getResponse().getContentAsString(), 
+                new TypeReference<>() {}
+            );
+            assertNull(response.getErrors());
+            assertEquals("OK", response.getData());
+
+            assertFalse(foodConsumptionRepository.existsById(foodConsumption.getFoodId()));
+
+        });
 }
+}
+        
+        
+        
+    
         
 
